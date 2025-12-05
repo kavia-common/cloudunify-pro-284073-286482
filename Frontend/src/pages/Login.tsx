@@ -31,8 +31,10 @@ export default function Login(): JSX.Element {
       const from = location?.state?.from?.pathname ?? '/dashboard';
       navigate(from, { replace: true });
     } catch (err: any) {
-      const apiMessage: string | undefined =
-        err?.response?.data?.message || err?.message || 'Login failed. Please try again.';
+      const apiMessage: string =
+        (err?.response?.data?.message as string | undefined) ??
+        (err?.message as string | undefined) ??
+        'Login failed. Please try again.';
       setErrMsg(apiMessage);
     }
   }
