@@ -16,7 +16,7 @@ This app reads the backend API base URL from the Vite environment variable `VITE
 - Copy `.env.example` to `.env`
 - Set the correct backend base URL:
   ```
-  VITE_API_BASE=http://localhost:3001/v1
+  VITE_API_BASE=http://localhost:3001
   ```
 
 Notes:
