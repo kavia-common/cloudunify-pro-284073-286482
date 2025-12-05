@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { appRoutes, navRoutes } from './routes';
 import { getApiBase } from './config';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 // Simple nav highlighting
 function useActivePath() {
@@ -55,7 +56,11 @@ export default function App(): JSX.Element {
         <main style={{ padding: '1rem' }} role="main">
           <Routes>
             {appRoutes.map((r) => (
-              <Route key={r.path} path={r.path} element={r.element} />
+              <Route
+                key={r.path}
+                path={r.path}
+                element={r.requiresAuth ? <ProtectedRoute>{r.element}</ProtectedRoute> : r.element}
+              />
             ))}
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="*" element={<div>Not Found</div>} />

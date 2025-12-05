@@ -10,15 +10,16 @@ export type RouteConfig = {
   element: React.ReactNode;
   label?: string;
   hidden?: boolean;
+  requiresAuth?: boolean;
 };
 
 // PUBLIC_INTERFACE
 export const appRoutes: RouteConfig[] = [
   { path: '/home', element: <Home />, label: 'Home' },
-  { path: '/dashboard', element: <Dashboard />, label: 'Dashboard' },
-  { path: '/resources', element: <Resources />, label: 'Resources' },
-  { path: '/settings', element: <Settings />, label: 'Settings' },
-  { path: '/login', element: <Login />, label: 'Login' }
+  { path: '/dashboard', element: <Dashboard />, label: 'Dashboard', requiresAuth: true },
+  { path: '/resources', element: <Resources />, label: 'Resources', requiresAuth: true },
+  { path: '/settings', element: <Settings />, label: 'Settings', requiresAuth: true },
+  { path: '/login', element: <Login />, label: 'Login', hidden: true }
 ];
 
 // PUBLIC_INTERFACE
