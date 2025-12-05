@@ -9,6 +9,38 @@ Lightweight, fast, and modern frontend for CloudUnify Pro using Vite, React 18, 
 - `npm run preview` — preview built app locally on port 3000
 - `npm run typecheck` — TypeScript type checking (no emit)
 
+## Running with FastAPI backend
+
+The backend has been migrated to FastAPI and runs on port 3001 by default.
+
+Quick start:
+1) Start the FastAPI backend:
+```
+cd Backend/fastapi_app
+# (optional) create/activate venv and install: pip install -r requirements.txt
+# export required env (see Backend/.env.example)
+uvicorn app.main:app --host 0.0.0.0 --port 3001 --reload
+# or:
+python serve.py
+```
+
+2) Configure the frontend to point at the backend:
+- Copy `.env.example` to `.env`
+- Ensure:
+```
+VITE_API_BASE=http://localhost:3001
+```
+
+3) Start the frontend:
+```
+npm install
+npm run dev
+```
+
+Notes:
+- Only variables prefixed with `VITE_` are exposed to the browser by Vite. Do not hardcode secrets or API URLs in the code.
+- In preview environments, ensure the backend sets `PREVIEW_MODE=true` and `CORS_ORIGIN` includes your Frontend URL (or `*` for development).
+
 ## Environment Configuration
 
 This app reads the backend API base URL from the Vite environment variable `VITE_API_BASE`.
@@ -78,7 +110,7 @@ Provided via `react-router-dom@6`:
 2. Configure environment:
    ```
    cp .env.example .env
-   # edit .env to set VITE_API_BASE appropriately
+   # edit .env to set VITE_API_BASE appropriately (e.g., http://localhost:3001)
    ```
 3. Start development server:
    ```
