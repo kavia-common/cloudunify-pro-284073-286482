@@ -19,10 +19,13 @@ export default defineConfig({
     }
   ],
   server: {
-    host: '0.0.0.0',
+    // Bind on all interfaces (equivalent to 0.0.0.0)
+    host: true,
     port: 3000,
     open: false,
     strictPort: true,
+    // Allow Kavia preview host to access the dev server
+    allowedHosts: ['vscode-internal-28490-beta.beta01.cloud.kavia.ai'],
     // Dev proxy to backend to simplify local development and avoid CORS
     proxy: {
       '/auth': {
