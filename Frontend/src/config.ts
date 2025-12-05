@@ -3,16 +3,26 @@
 export function getApiBase(): string {
   /**
    * Returns the API base URL from environment.
-   * Expects VITE_API_BASE to be provided via .env file.
-   * If not set, returns an empty string and logs a warning.
-   * Consumers should handle empty string appropriately (e.g., show config error UI).
+   * Prefers VITE_API_BASE from env. If not set, compute a sensible local default:
+   * same host as the frontend but port 3001 (backend default).
    */
-  const base = import.meta.env.VITE_API_BASE as string | undefined;
-  if (!base) {
-    // Do not hardcode defaults; warn instead to keep configuration external.
-    // eslint-disable-next-line no-console
-    console.warn("VITE_API_BASE is not set. Please configure it in your environment.");
-    return "";
+  const envBase = import.meta.env.VITE_API_BASE as string | undefined;
+  if (envBase && typeof envBase === 'string' && envBase.trim()) {
+    return envBase.trim();
   }
-  return base;
+
+  // Runtime fallback to ease local development without restarting dev server
+  if (typeof window !== 'undefined' && window.location) {
+    const proto = window.location.protocol;
+    const host = window.location.hostname;
+    // Prefer explicit port 3001 for backend, preserve protocol (http/https)
+    const computed = `${proto}//${host}:3001`;
+    // eslint-disable-next-line no-console
+    console.warn(`VITE_API_BASE is not set. Using computed fallback: ${computed}`);
+    return computed;
+  }
+
+  // eslint-disable-next-line no-console
+  console.warn("VITE_API_BASE is not set and window is unavailable. Returning empty base URL.");
+  return '';
 }

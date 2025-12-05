@@ -84,7 +84,7 @@ export default function Resources(): JSX.Element {
             type="text"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            placeholder="e.g., running, stopped"
+            placeholder="e.g., active, inactive, deleted"
             aria-label="Filter by status"
           />
         </label>
