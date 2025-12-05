@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Link, Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { appRoutes, navRoutes } from './routes';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { appRoutes } from './routes';
 import { getApiBase } from './config';
 import { ProtectedRoute } from './components/ProtectedRoute';
-
-// Simple nav highlighting
-function useActivePath() {
-  const location = useLocation();
-  return location.pathname;
-}
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // PUBLIC_INTERFACE
 export default function App(): JSX.Element {
   /**
    * Root application component.
    * - Manages light/dark theme via data-theme attribute.
-   * - Provides top-level navigation and React Router configuration.
+   * - Provides App layout (navbar + sidebar + content) with React Router configuration.
    * - Reads API base from environment to ensure configuration is wired.
    */
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -38,57 +35,26 @@ export default function App(): JSX.Element {
   return (
     <BrowserRouter>
       <div className="App">
-        <header className="App-header" role="banner">
-          <button
-            className="theme-toggle"
-            onClick={toggleTheme}
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          >
-            {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
-          </button>
-
-          <h1>CloudUnify Pro</h1>
-          <p className="App-link" aria-live="polite">Unified multi-cloud management platform</p>
-
-          <Navigation />
-        </header>
-
-        <main style={{ padding: '1rem' }} role="main">
-          <Routes>
-            {appRoutes.map((r) => (
-              <Route
-                key={r.path}
-                path={r.path}
-                element={r.requiresAuth ? <ProtectedRoute>{r.element}</ProtectedRoute> : r.element}
-              />
-            ))}
-            <Route path="/" element={<Navigate to="/home" replace />} />
-            <Route path="*" element={<div>Not Found</div>} />
-          </Routes>
-        </main>
+        <Navbar theme={theme} onToggleTheme={toggleTheme} />
+        <div className="layout">
+          <Sidebar />
+          <main id="main-content" className="content" role="main">
+            <ErrorBoundary>
+              <Routes>
+                {appRoutes.map((r) => (
+                  <Route
+                    key={r.path}
+                    path={r.path}
+                    element={r.requiresAuth ? <ProtectedRoute>{r.element}</ProtectedRoute> : r.element}
+                  />
+                ))}
+                <Route path="/" element={<Navigate to="/home" replace />} />
+                <Route path="*" element={<div>Not Found</div>} />
+              </Routes>
+            </ErrorBoundary>
+          </main>
+        </div>
       </div>
     </BrowserRouter>
-  );
-}
-
-function Navigation(): JSX.Element {
-  const active = useActivePath();
-  return (
-    <nav aria-label="Main Navigation" style={{ display: 'flex', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap' }}>
-      {navRoutes.map((r) => (
-        <Link
-          key={r.path}
-          to={r.path}
-          style={{
-            color: active === r.path ? 'var(--text-primary)' : 'var(--text-secondary)',
-            textDecoration: 'none',
-            borderBottom: active === r.path ? '2px solid var(--text-secondary)' : '2px solid transparent',
-            paddingBottom: '2px'
-          }}
-        >
-          {r.label}
-        </Link>
-      ))}
-    </nav>
   );
 }
